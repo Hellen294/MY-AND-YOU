@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulated Data Collection</title>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js';
+        import { getDatabase, ref, set } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBHquXAfwBPnFpGQ7No-kC17O25PRsceHY",
+            authDomain: "hack-27842.firebaseapp.com",
+            projectId: "hack-27842",
+            storageBucket: "hack-27842.appspot.com",
+            messagingSenderId: "606359984765",
+            appId: "1:606359984765:web:a5df7d7ed3e70432deaf14"
+        };
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+
+document.getElementById('dataForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    // Capture input data
+    const contactName = document.getElementById('contactName').value;
+    const contactPhone = document.getElementById('contactPhone').value;
+    const messageContact = document.getElementById('messageContact').value;
+    const messageContent = document.getElementById('messageContent').value;
+
+    // Create data objects
+    const contactData = {
+        name: contactName,
+        phone: contactPhone
+    };
+    const messageData = {
+        contact: messageContact,
+        message: messageContent
+    };
+
+    // Save data to Firebase
+    const contactRef = ref(database, 'contacts/' + new Date().getTime()); // Use timestamp for unique key
+    const messageRef = ref(database, 'messages/' + new Date().getTime()); // Use timestamp for unique key
+
+    set(contactRef, contactData)
+        .then(() => console.log('Contact saved successfully'))
+        .catch(error => console.error('Error saving contact:', error));
+
+    set(messageRef, messageData)
+        .then(() => console.log('Message saved successfully'))
+        .catch(error => console.error('Error saving message:', error));
+
+    // Clear the form after submission
+    document.getElementById('dataForm').reset();
+});
+    </script>
+</head>
+<body>
+    <h1>Simulated Data Collection</h1>
+    <p>Simulated data is being collected and stored.</p>
+</body>
+</html>

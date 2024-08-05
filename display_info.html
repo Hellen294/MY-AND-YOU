@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Mock Data</title>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js';
+        import { getDatabase, ref, get } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js';
+
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBHquXAfwBPnFpGQ7No-kC17O25PRsceHY",
+            authDomain: "hack-27842.firebaseapp.com",
+            projectId: "hack-27842",
+            storageBucket: "hack-27842.appspot.com",
+            messagingSenderId: "606359984765",
+            appId: "1:606359984765:web:a5df7d7ed3e70432deaf14"
+        };
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+
+// Function to display data in real-time
+function displayRealTimeData() {
+    const contactsDiv = document.getElementById('contacts');
+    const messagesDiv = document.getElementById('messages');
+
+    // Listen for real-time updates to the 'contacts' node
+    const contactsRef = ref(database, 'contacts');
+    onValue(contactsRef, (snapshot) => {
+        contactsDiv.innerHTML = '<h2>Contacts</h2>';
+        if (snapshot.exists()) {
+            snapshot.forEach(childSnapshot => {
+                const data = childSnapshot.val();
+                contactsDiv.innerHTML += `<p>${data.name}: ${data.phone}</p>`;
+            });
+        } else {
+            contactsDiv.innerHTML += '<p>No contacts found.</p>';
+        }
+    }, (error) => {
+        console.error('Error fetching contacts data:', error);
+    });
+
+    // Listen for real-time updates to the 'messages' node
+    const messagesRef = ref(database, 'messages');
+    onValue(messagesRef, (snapshot) => {
+        messagesDiv.innerHTML = '<h2>Messages</h2>';
+        if (snapshot.exists()) {
+            snapshot.forEach(childSnapshot => {
+                const data = childSnapshot.val();
+                messagesDiv.innerHTML += `<p>${data.contact}: ${data.message}</p>`;
+            });
+        } else {
+            messagesDiv.innerHTML += '<p>No messages found.</p>';
+        }
+    }, (error) => {
+        console.error('Error fetching messages data:', error);
+    });
+}
+
+// Call the function to start displaying real-time data
+window.onload = displayRealTimeData;
+    </script>
+</head>
+<body>
+    <h1>Display Mock Data</h1>
+    <div id="contacts"></div>
+    <div id="messages"></div>
+</body>
+</html>
